@@ -36,6 +36,10 @@ yarn-error.log*
 # vercel
 .vercel
 
+# vidéo publicitaire : dépendances et fichiers rendus (lourds)
+/video/node_modules
+/video/sortie
+
 # réglages locaux de Claude Code (propres à cette machine)
 .claude/settings.local.json
 

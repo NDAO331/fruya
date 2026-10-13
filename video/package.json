@@ -1,0 +1,21 @@
+{
+  "name": "fruya-video-pub",
+  "private": true,
+  "description": "Vidéo publicitaire Fruya (motion design, Remotion). Séparée de l'app.",
+  "scripts": {
+    "studio": "remotion studio",
+    "rendu": "remotion render Pub sortie/fruya-pub-9x16.mp4",
+    "apercu": "remotion still Pub sortie/apercu.png --frame=420"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.535",
+    "@remotion/google-fonts": "^4.0.535",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "remotion": "^4.0.535"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "typescript": "^5.9.3"
+  }
+}
