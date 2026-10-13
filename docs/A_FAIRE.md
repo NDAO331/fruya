@@ -16,4 +16,4 @@
 - [x] **Fin de journée** : la caisse théorique du rapport (`daily_reports`) doit être calculée par le serveur, pas envoyée par le téléphone. → `supabase/migrations/005_fin_de_journee_analyses.sql` (`cloturer_journee` : le téléphone n'envoie que l'argent compté ; écriture directe dans `daily_reports` retirée).
 
 ## Retours terrain
-- [ ] **Moyen de paiement (Wave / Orange Money / espèces)** : coller `supabase/migrations/008_moyen_paiement.sql` dans le SQL Editor de Supabase **avant** la mise en ligne (sinon l'historique des ventes ne s'affiche plus et les nouvelles ventes restent en attente sur les téléphones).
+- [x] **Moyen de paiement (Wave / Orange Money / espèces)** : coller `supabase/migrations/008_moyen_paiement.sql` dans le SQL Editor de Supabase **avant** la mise en ligne (sinon l'historique des ventes ne s'affiche plus et les nouvelles ventes restent en attente sur les téléphones).
