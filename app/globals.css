@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+/* Identité Fruya (CLAUDE.md, section Design) : orange mangue et vert feuille
+   sur fond blanc. Aplats uniquement, thème clair lisible en plein soleil. */
+@theme inline {
+  --color-fond: #ffffff;
+  --color-cadre: #eceae6;
+  --color-gris: #f4f5f6;
+  --color-trait: #eceef0;
+  --color-encre: #15171a;
+  --color-encre-doux: #5f656b;
+
+  --color-orange: #ff7a1a;
+  --color-orange-pale: #fff1e6;
+  --color-orange-clair: #ffc59a;
+  --color-orange-fonce: #a84a00;
+  --color-vert: #1e6b3a;
+  --color-vert-fonce: #16512c;
+  --color-vert-pale: #e7f2eb;
+
+  --color-alerte: #b42318;
+  --color-alerte-pale: #fdecea;
+
+  --font-sans: var(--font-barlow);
+  --font-montant: var(--font-barlow-condensed);
+}
+
+body {
+  background: var(--color-cadre);
+  color: var(--color-encre);
+}
+
+/* Montants : épais, étroits, chiffres de même largeur. */
+.montant {
+  font-family: var(--font-barlow-condensed);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Panneau qui monte du bas (components/Feuille.tsx). */
+dialog.feuille[open] {
+  animation: feuille-monte 180ms ease-out;
+}
+@keyframes feuille-monte {
+  from {
+    transform: translateY(24px);
+    opacity: 0.6;
+  }
+}

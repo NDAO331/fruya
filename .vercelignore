@@ -1,0 +1,9 @@
+# Fichiers jamais envoyés à Vercel lors de la mise en ligne.
+# Les clés (Supabase, numéro de paiement) se saisissent dans le tableau de
+# bord Vercel : Project > Settings > Environment Variables.
+.env*
+node_modules
+.next
+.claude
+.cursor
+*.log
