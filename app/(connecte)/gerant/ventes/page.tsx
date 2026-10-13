@@ -5,7 +5,7 @@ import { SousOngletsVentes } from "@/components/SousOngletsVentes";
 import { exigerRole } from "@/lib/session";
 import { createClient } from "@/lib/supabase/server";
 import type { Forme } from "@/lib/formes";
-import type { Unite } from "@/lib/types";
+import type { Paiement, Unite } from "@/lib/types";
 import { Historique, type Mouvement } from "./Historique";
 
 const formatJour = new Intl.DateTimeFormat("fr-FR", {
@@ -34,6 +34,7 @@ type VenteSql = {
   date: string;
   montant_total: number;
   methode: "manuelle" | "vocale";
+  paiement: Paiement;
   statut: "validee" | "annulee";
   raison_annulation: string | null;
   user_id: string;
@@ -67,7 +68,7 @@ export default async function PageVentes({ searchParams }: PageProps<"/gerant/ve
     supabase
       .from("sales")
       .select(
-        "id, date, montant_total, methode, statut, raison_annulation, user_id, annulee_par, sale_items(quantite, unite, prix_unitaire, products(nom, forme))",
+        "id, date, montant_total, methode, paiement, statut, raison_annulation, user_id, annulee_par, sale_items(quantite, unite, prix_unitaire, products(nom, forme))",
       )
       .gte("date", debut)
       .lt("date", fin)
@@ -105,6 +106,7 @@ export default async function PageVentes({ searchParams }: PageProps<"/gerant/ve
         auteur: nom(v.user_id),
         montant: v.montant_total,
         vocale: v.methode === "vocale",
+        paiement: v.paiement ?? "especes",
         lignes: v.sale_items.map((l) => ({
           nom: l.products?.nom ?? "?",
           forme: l.products?.forme ?? "autre",

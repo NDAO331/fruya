@@ -4,6 +4,8 @@ import { useState } from "react";
 import { FormeFruit } from "@/components/FormeFruit";
 import { classeBoutonPrincipal } from "@/components/formulaire";
 import { fcfa } from "@/lib/format";
+import type { Paiement } from "@/lib/types";
+import { ChoixPaiement } from "./ChoixPaiement";
 import { encaisserLignes, quantiteAffichee, totalPanier, type LignePanier } from "./panier";
 import { VenteEncaissee } from "./VenteEncaissee";
 
@@ -31,6 +33,7 @@ export function PanierFeuille({
   onEncaisse: () => void; // vide le panier
   onTermine: () => void; // ferme le panneau
 }) {
+  const [paiement, setPaiement] = useState<Paiement>("especes");
   const [encaisse, setEncaisse] = useState<{ id: string; date: Date; lignes: LignePanier[] } | null>(null);
   const total = totalPanier(lignes);
 
@@ -41,6 +44,7 @@ export function PanierFeuille({
         date={encaisse.date}
         lignes={encaisse.lignes}
         total={totalPanier(encaisse.lignes)}
+        paiement={paiement}
         etalNom={etalNom}
         vendeurNom={vendeurNom}
         onSuivante={onTermine}
@@ -50,7 +54,7 @@ export function PanierFeuille({
 
   async function encaisser() {
     if (lignes.length === 0) return;
-    const vente = await encaisserLignes(lignes, methode, stallId, userId);
+    const vente = await encaisserLignes(lignes, methode, paiement, stallId, userId);
     setEncaisse({ ...vente, lignes });
     onEncaisse();
   }
@@ -93,6 +97,7 @@ export function PanierFeuille({
       >
         + Ajouter un fruit
       </button>
+      {lignes.length > 0 && <ChoixPaiement valeur={paiement} onChange={setPaiement} />}
       {lignes.length > 0 && (
         <button
           type="button"

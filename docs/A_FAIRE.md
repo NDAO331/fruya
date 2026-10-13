@@ -14,3 +14,6 @@
 - [x] **Numéro de paiement** : ajouter `FRUYA_NUMERO_PAIEMENT=77 xxx xx xx` dans `.env.local` (affiché sur l'écran « Abonnement expiré » et dans le rappel WhatsApp).
 - [ ] **Compte admin** : à créer à la main dans Supabase (voir la fin de `001_schema_initial.sql`), mot de passe = code PIN à 6 chiffres.
 - [x] **Fin de journée** : la caisse théorique du rapport (`daily_reports`) doit être calculée par le serveur, pas envoyée par le téléphone. → `supabase/migrations/005_fin_de_journee_analyses.sql` (`cloturer_journee` : le téléphone n'envoie que l'argent compté ; écriture directe dans `daily_reports` retirée).
+
+## Retours terrain
+- [ ] **Moyen de paiement (Wave / Orange Money / espèces)** : coller `supabase/migrations/008_moyen_paiement.sql` dans le SQL Editor de Supabase **avant** la mise en ligne (sinon l'historique des ventes ne s'affiche plus et les nouvelles ventes restent en attente sur les téléphones).

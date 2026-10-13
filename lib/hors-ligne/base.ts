@@ -1,7 +1,7 @@
 "use client";
 
 import Dexie, { type EntityTable } from "dexie";
-import type { Unite } from "@/lib/types";
+import type { Paiement, Unite } from "@/lib/types";
 
 // Base locale du téléphone (IndexedDB) : toute vente et toute perte y est
 // enregistrée d'abord, puis envoyée au serveur dès que le réseau est là
@@ -22,6 +22,7 @@ export type VenteLocale = {
   user_id: string;
   date: string; // ISO, heure du téléphone
   methode: "manuelle" | "vocale";
+  paiement?: Paiement; // absent sur les ventes d'avant : espèces
   lignes: LigneVente[];
   montant_total: number; // calcul local ; le serveur recalcule
   resume: string; // « Mangue · 2,5 kg à 750 F »

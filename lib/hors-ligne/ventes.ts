@@ -15,6 +15,7 @@ export async function enregistrerVenteLocale(vente: {
   stall_id: string;
   user_id: string;
   methode: VenteLocale["methode"];
+  paiement: NonNullable<VenteLocale["paiement"]>;
   lignes: LigneVente[];
   resume: string;
 }): Promise<VenteLocale> {

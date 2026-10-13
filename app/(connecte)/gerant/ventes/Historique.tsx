@@ -6,7 +6,7 @@ import { FormeFruit } from "@/components/FormeFruit";
 import { BoutonEnvoyer, Champ, MessageFormulaire } from "@/components/formulaire";
 import { fcfa } from "@/lib/format";
 import type { Forme } from "@/lib/formes";
-import type { EtatFormulaire, Unite } from "@/lib/types";
+import { LIBELLE_PAIEMENT, type EtatFormulaire, type Paiement, type Unite } from "@/lib/types";
 import { annuler } from "./actions";
 
 type Annulation = { raison: string; par: string } | null;
@@ -19,6 +19,7 @@ export type Mouvement =
       auteur: string;
       montant: number;
       vocale: boolean;
+      paiement: Paiement;
       lignes: { nom: string; forme: Forme; quantite: number; unite: Unite; prix_unitaire: number }[];
       annulation: Annulation;
     }
@@ -122,6 +123,7 @@ export function Historique({ mouvements }: { mouvements: Mouvement[] }) {
                   <span className="block truncate text-sm font-semibold text-encre-doux">
                     {m.auteur}
                     {m.annulation ? " · annulée" : m.type === "perte" && m.raison ? ` · ${m.raison}` : ""}
+                    {m.type === "vente" && m.paiement !== "especes" ? ` · ${LIBELLE_PAIEMENT[m.paiement]}` : ""}
                     {m.type === "vente" && m.vocale ? " · dictée" : ""}
                   </span>
                 </span>

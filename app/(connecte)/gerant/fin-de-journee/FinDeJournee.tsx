@@ -15,6 +15,8 @@ export type Chiffres = {
   total_pertes: number;
   nb_ventes: number;
   nb_pertes: number;
+  total_wave?: number; // absents tant que la migration 008 n'est pas passée
+  total_orange_money?: number;
 };
 
 export type Rapport = {
@@ -54,13 +56,15 @@ export function FinDeJournee({ jour, chiffres, rapport }: { jour: string; chiffr
     0,
   );
 
+  const wave = chiffres.total_wave ?? 0;
+  const orangeMoney = chiffres.total_orange_money ?? 0;
   const valeurCompte = /^\d+$/.test(compte.replace(/\s/g, "")) ? Number(compte.replace(/\s/g, "")) : null;
 
   return (
     <div className="flex flex-col gap-4 px-4">
       <section className="rounded-2xl bg-gris px-4 py-3">
         <p className="flex justify-between py-1 text-base font-semibold">
-          <span>Ventes au comptant ({chiffres.nb_ventes})</span>
+          <span>Ventes en espèces</span>
           <span className="montant">{fcfa(chiffres.total_ventes_comptant)}</span>
         </p>
         <p className="flex justify-between py-1 text-base font-semibold">
@@ -72,10 +76,28 @@ export function FinDeJournee({ jour, chiffres, rapport }: { jour: string; chiffr
           <span className="montant text-2xl">{fcfa(chiffres.caisse_theorique)}</span>
         </p>
         <p className="text-sm font-semibold text-encre-doux">
-          Les prises à crédit ne comptent pas : aucun argent reçu.
+          {chiffres.nb_ventes} vente(s) au total. Les prises à crédit ne comptent pas : aucun argent reçu.
           {chiffres.nb_pertes > 0 && ` Pertes du jour : ${chiffres.nb_pertes} (≈ ${fcfa(chiffres.total_pertes)}).`}
         </p>
       </section>
+
+      {(wave > 0 || orangeMoney > 0) && (
+        <section className="rounded-2xl bg-vert-pale px-4 py-3">
+          <p className="text-sm font-bold text-vert">Pas dans la caisse : vérifie sur ton téléphone</p>
+          {wave > 0 && (
+            <p className="flex justify-between py-1 text-base font-semibold">
+              <span>Wave</span>
+              <span className="montant">{fcfa(wave)}</span>
+            </p>
+          )}
+          {orangeMoney > 0 && (
+            <p className="flex justify-between py-1 text-base font-semibold">
+              <span>Orange Money</span>
+              <span className="montant">{fcfa(orangeMoney)}</span>
+            </p>
+          )}
+        </section>
+      )}
 
       {enAttente > 0 && (
         <p className="rounded-xl bg-orange-pale px-4 py-3 text-base font-semibold text-orange-fonce">

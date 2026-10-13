@@ -1,5 +1,5 @@
 # PRODUCT REQUIREMENT DOCUMENT (PRD)
-## Fruya — Version 6.6 (MVP Vendeurs de Fruits uniquement)
+## Fruya — Version 6.7 (MVP Vendeurs de Fruits uniquement)
 
 > Remplace la v5.0. Le périmètre est volontairement limité aux vendeurs de fruits de marché. Toute référence à d'autres profils (boutique fixe, commerce en ligne) et aux formules associées a été retirée. Ce document décrit uniquement ce qui sera construit et testé.
 >
@@ -14,6 +14,8 @@
 > v6.5 : pour le pilote, la dictée utilise la reconnaissance vocale gratuite du navigateur (Web Speech API, fr-FR) au lieu de Whisper ; la vente reconnue est confirmée d'un toucher ; pas de dictée hors-ligne (le micro est caché, la saisie manuelle reste). Whisper est envisagé après le pilote.
 >
 > v6.6 : panier (plusieurs fruits dans une même vente, à la main comme à la voix) ; le reçu devient une vraie facture PDF partagée par WhatsApp ; annulation par le vendeur dans les 5 minutes depuis la caisse.
+>
+> v6.7 : moyen de paiement de chaque vente (espèces, Wave ou Orange Money), demandé par un commerçant ; la caisse théorique ne compte que les espèces, Wave et Orange Money sont affichés à part en fin de journée.
 
 ---
 
@@ -51,6 +53,7 @@ Pour quelqu'un debout à son étal, avec peu de temps, parfois une faible aisanc
 
 - **Écran principal** : un gros bouton par fruit (nom + icône), total du jour affiché en grand en haut, bouton **Perte** (rouge) toujours visible en bas, bouton **micro** pour la dictée.
 - **Vendre** : taper le fruit → quantité (+ bascule kg/pièce si besoin) → prix pré-rempli → **Encaisser** → coche verte. 3 taps maximum dans le cas courant.
+- **Moyen de paiement** : juste au-dessus d'**Encaisser**, choix **Espèces / Wave / Orange Money** (Espèces pré-sélectionné : aucun toucher de plus dans le cas courant). Le moyen choisi apparaît sur l'écran « Encaissé ! », la facture et l'historique du gérant.
 - **Panier** : pour un client qui prend plusieurs fruits, « + Autre fruit pour ce client » ajoute la ligne à un panier ; les fruits suivants s'y ajoutent ; un seul **Encaisser** pour le total (une seule vente, une seule facture). Chaque ligne du panier peut être retirée avant d'encaisser. La dictée accepte aussi plusieurs fruits dans une phrase (« 2 kilos de mangues et 3 bananes »).
 - **Annuler une erreur** : la caisse affiche les dernières opérations du vendeur, avec « Annuler » (raison obligatoire) pendant 5 minutes.
 - **Déclarer une perte** : bouton Perte → appareil photo s'ouvre directement → fruit + quantité → confirmer. Même schéma que la vente.
@@ -119,10 +122,12 @@ Supabase reste accessible en secours pour les opérations exceptionnelles.
 
 ### 4.4 Caisse théorique et fin de journée
 **Caisse théorique du jour** =
-ventes au comptant validées du jour
+ventes validées du jour payées en espèces
 \+ paiements de dettes encaissés dans la journée.
 
 Les prises à crédit (ardoise) **n'entrent pas** dans la caisse théorique : aucun argent n'a été reçu.
+
+Les ventes payées par **Wave** ou **Orange Money** n'entrent pas non plus dans la caisse (l'argent arrive sur le téléphone) : elles sont affichées à part, par moyen, pour que le gérant les vérifie sur son compte.
 
 Le gérant saisit le montant réellement compté. L'application affiche l'écart (positif ou négatif), mis en évidence au-delà d'un seuil (ex. 500 FCFA). Le rapport est enregistré et consultable ensuite.
 
@@ -190,13 +195,13 @@ Après une vente, bouton optionnel **« Envoyer la facture »** : une vraie fact
 - **users** (id, téléphone, nom, rôle [vendeur/gérant/admin], stall_id — vide pour l'admin)
 - **payments** (id, stall_id, montant, date_paiement, moyen [wave/orange_money/espèces], mois_payés, enregistré_par, note)
 - **products** (id, stall_id, nom, unité_défaut [kg/pièce], prix_kg, prix_pièce, dernier_prix_kg, dernier_prix_pièce, actif) — ajoutés par le gérant ; les derniers prix sont mis à jour à chaque vente et pré-remplissent la caisse, aucun fruit pré-chargé ; au moins un prix renseigné ; jamais supprimés, seulement désactivés (actif = non)
-- **sales** (id, stall_id, user_id, date, montant_total, méthode [manuelle/vocale], statut [validée/annulée], raison_annulation, annulée_par)
+- **sales** (id, stall_id, user_id, date, montant_total, méthode [manuelle/vocale], paiement [espèces/wave/orange_money], statut [validée/annulée], raison_annulation, annulée_par)
 - **sale_items** (id, sale_id, product_id, quantité [décimal], unité [kg/pièce], prix_unitaire)
 - **voice_queue** (local uniquement, IndexedDB) (id, audio, date, statut [en_attente/transcrite/échec]) — *après le pilote seulement, avec Whisper*
 - **losses** (id, stall_id, user_id, date, product_id, quantité, unité, raison, photo_url, statut [validée/annulée], raison_annulation, annulée_par)
 - **debts** (id, stall_id, client_nom, client_téléphone) — montant dû calculé à partir des transactions
 - **debt_transactions** (id, debt_id, user_id, type [prise/paiement/annulation], montant, détail_fruits, transaction_annulée_id, raison, date) — une annulation pointe vers la prise ou le paiement qu'elle corrige, avec raison obligatoire
-- **daily_reports** (id, stall_id, date, total_ventes_comptant, total_paiements_dettes, caisse_théorique, caisse_déclarée, écart, total_pertes)
+- **daily_reports** (id, stall_id, date, total_ventes_comptant, total_paiements_dettes, caisse_théorique, caisse_déclarée, écart, total_pertes, total_wave, total_orange_money)
 - **stock_arrivals** (id, stall_id, product_id, user_id, date, quantité, unité, prix_achat_total, statut [validée/annulée], raison_annulation, annulée_par)
 - **stock_counts** (id, stall_id, product_id, user_id, date, quantité_comptée, quantité_théorique, écart, unité) — inventaires
 - **products** reçoit aussi seuil_alerte (facultatif, dans l'unité de stock)

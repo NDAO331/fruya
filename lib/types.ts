@@ -3,6 +3,13 @@ import type { Forme } from "@/lib/formes";
 
 export type Role = "vendeur" | "gerant" | "admin";
 export type Unite = "kg" | "piece";
+export type Paiement = "especes" | "wave" | "orange_money";
+
+export const LIBELLE_PAIEMENT: Record<Paiement, string> = {
+  especes: "Espèces",
+  wave: "Wave",
+  orange_money: "Orange Money",
+};
 
 export type Profil = {
   id: string;

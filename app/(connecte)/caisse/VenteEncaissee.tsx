@@ -4,7 +4,7 @@ import { FactureVente } from "@/components/FactureVente";
 import { classeBoutonPrincipal } from "@/components/formulaire";
 import type { LigneRecu } from "@/components/RecuWhatsApp";
 import { fcfa } from "@/lib/format";
-import type { Unite } from "@/lib/types";
+import { LIBELLE_PAIEMENT, type Paiement, type Unite } from "@/lib/types";
 
 function quantite(q: number, unite: Unite): string {
   const t = String(q).replace(".", ",");
@@ -17,6 +17,7 @@ export function VenteEncaissee({
   date,
   lignes,
   total,
+  paiement,
   etalNom,
   vendeurNom,
   onSuivante,
@@ -25,6 +26,7 @@ export function VenteEncaissee({
   date: Date;
   lignes: LigneRecu[];
   total: number;
+  paiement: Paiement;
   etalNom: string;
   vendeurNom: string;
   onSuivante: () => void;
@@ -38,6 +40,7 @@ export function VenteEncaissee({
       </span>
       <p className="mt-4 text-2xl font-bold">Encaissé !</p>
       <p className="montant text-4xl">{fcfa(total)}</p>
+      <p className="text-base font-bold text-vert">Payé par {LIBELLE_PAIEMENT[paiement]}</p>
       <ul className="mt-1 text-base font-semibold text-encre-doux">
         {lignes.map((l, i) => (
           <li key={i}>
@@ -51,7 +54,7 @@ export function VenteEncaissee({
         </p>
       )}
       <div className="mt-6 flex w-full flex-col gap-2">
-        <FactureVente venteId={venteId} date={date} etal={etalNom} vendeur={vendeurNom} lignes={lignes} total={total} />
+        <FactureVente venteId={venteId} date={date} etal={etalNom} vendeur={vendeurNom} lignes={lignes} total={total} paiement={paiement} />
         <button type="button" onClick={onSuivante} className={classeBoutonPrincipal}>
           Vente suivante
         </button>

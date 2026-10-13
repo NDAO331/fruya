@@ -4,7 +4,7 @@ import { fcfa } from "@/lib/format";
 import type { Forme } from "@/lib/formes";
 import { nouvelId } from "@/lib/hors-ligne/base";
 import { enregistrerVenteLocale, montantLigne } from "@/lib/hors-ligne/ventes";
-import type { Unite } from "@/lib/types";
+import type { Paiement, Unite } from "@/lib/types";
 
 // Panier : plusieurs fruits dans une même vente (une seule facture).
 export type LignePanier = {
@@ -35,6 +35,7 @@ export function totalPanier(lignes: LignePanier[]): number {
 export async function encaisserLignes(
   lignes: LignePanier[],
   methode: "manuelle" | "vocale",
+  paiement: Paiement,
   stallId: string,
   userId: string,
 ): Promise<{ id: string; date: Date }> {
@@ -46,6 +47,7 @@ export async function encaisserLignes(
     stall_id: stallId,
     user_id: userId,
     methode,
+    paiement,
     lignes: lignes.map((l) => ({ product_id: l.product_id, quantite: l.quantite, unite: l.unite, prix_unitaire: l.prix_unitaire })),
     resume,
   });

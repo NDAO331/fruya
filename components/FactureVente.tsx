@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { RecuWhatsApp, type LigneRecu } from "@/components/RecuWhatsApp";
 import { creerFacturePdf, numeroFacture } from "@/lib/facture-pdf";
+import type { Paiement } from "@/lib/types";
 
 // Facture PDF (PRD 4.7) : créée sur le téléphone, puis envoyée par le menu
 // « Partager » d'Android (WhatsApp, puis le client). WhatsApp n'accepte pas
@@ -16,6 +17,7 @@ export function FactureVente({
   vendeur,
   lignes,
   total,
+  paiement,
 }: {
   venteId: string;
   date: Date;
@@ -23,6 +25,7 @@ export function FactureVente({
   vendeur: string;
   lignes: LigneRecu[];
   total: number;
+  paiement: Paiement;
 }) {
   const [message, setMessage] = useState<string>();
   const [texte, setTexte] = useState(false);
@@ -30,7 +33,7 @@ export function FactureVente({
 
   async function envoyer() {
     setMessage(undefined);
-    const pdf = creerFacturePdf({ numero, date, etal, vendeur, lignes, total });
+    const pdf = creerFacturePdf({ numero, date, etal, vendeur, lignes, total, paiement });
     const fichier = new File([pdf], `Facture-${numero}.pdf`, { type: "application/pdf" });
 
     if (navigator.canShare?.({ files: [fichier] })) {
@@ -65,7 +68,7 @@ export function FactureVente({
       </button>
       {message && <p className="text-base font-semibold text-encre-doux">{message}</p>}
       {texte ? (
-        <RecuWhatsApp etal={etal} lignes={lignes} total={total} date={date} ouvertDirectement />
+        <RecuWhatsApp etal={etal} lignes={lignes} total={total} paiement={paiement} date={date} ouvertDirectement />
       ) : (
         <button
           type="button"

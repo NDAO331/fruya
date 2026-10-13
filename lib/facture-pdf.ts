@@ -2,7 +2,7 @@
 // bibliothèque externe : texte en Helvetica, colonnes de chiffres en
 // Courier (largeur fixe, alignement à droite exact). Format A6.
 
-import type { Unite } from "./types";
+import { LIBELLE_PAIEMENT, type Paiement, type Unite } from "./types";
 
 export type LigneFacture = { nom: string; quantite: number; unite: Unite; prix_unitaire: number; montant: number };
 
@@ -13,6 +13,7 @@ export type Facture = {
   vendeur: string;
   lignes: LigneFacture[];
   total: number;
+  paiement: Paiement;
 };
 
 const LARGEUR = 298; // A6 en points (105 × 148 mm)
@@ -109,7 +110,7 @@ function dessiner(fa: Facture): string {
   texte(MARGE + 8, y, "F2", 11, "TOTAL");
   texte(colMontant - 8 - latin(f(fa.total)).length * 13 * 0.6, y, "F3", 13, f(fa.total));
   ops.push("0 0 0 rg");
-  texte(MARGE, y - 26, "F1", 9, "Payé comptant.");
+  texte(MARGE, y - 26, "F1", 9, `Payé par ${LIBELLE_PAIEMENT[fa.paiement]}.`);
 
   // Pied de page.
   texte(MARGE, 44, "F2", 10, "Jërëjëf ! Merci pour ton achat.");

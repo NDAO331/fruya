@@ -56,6 +56,7 @@ async function envoyerVentes(supabase: Supabase, userId: string): Promise<number
       p_date: vente.date,
       p_methode: vente.methode,
       p_lignes: vente.lignes,
+      p_paiement: vente.paiement ?? "especes",
     });
     if (!error) {
       await base.ventes.update(vente.id, { etat: "envoyee", envoyee_le: new Date().toISOString() });

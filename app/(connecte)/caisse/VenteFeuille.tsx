@@ -4,7 +4,8 @@ import { useState } from "react";
 import { FormeFruit } from "@/components/FormeFruit";
 import { classeBoutonPrincipal } from "@/components/formulaire";
 import { chiffres, fcfa } from "@/lib/format";
-import type { Fruit, Unite } from "@/lib/types";
+import type { Fruit, Paiement, Unite } from "@/lib/types";
+import { ChoixPaiement } from "./ChoixPaiement";
 import { encaisserLignes, nouvelleLigne, type LignePanier } from "./panier";
 import { lireNombre, PaveNumerique, saisir } from "./PaveNumerique";
 import { VenteEncaissee } from "./VenteEncaissee";
@@ -51,6 +52,7 @@ export function VenteFeuille({
   const [prix, setPrix] = useState(String(initial?.prix ?? prixProposes[unite] ?? ""));
   const [champ, setChamp] = useState<Champ>("quantite");
   const [erreur, setErreur] = useState<string>();
+  const [paiement, setPaiement] = useState<Paiement>("especes");
   const [encaisse, setEncaisse] = useState<{ id: string; date: Date; ligne: LignePanier } | null>(null);
 
   const q = lireNombre(quantite);
@@ -86,7 +88,7 @@ export function VenteFeuille({
 
   async function encaisser() {
     if (!valide()) return;
-    const vente = await encaisserLignes([ligne], "manuelle", stallId, userId);
+    const vente = await encaisserLignes([ligne], "manuelle", paiement, stallId, userId);
     setEncaisse({ ...vente, ligne });
   }
 
@@ -103,6 +105,7 @@ export function VenteFeuille({
         date={encaisse.date}
         lignes={[encaisse.ligne]}
         total={encaisse.ligne.montant}
+        paiement={paiement}
         etalNom={etalNom}
         vendeurNom={vendeurNom}
         onSuivante={onFermer}
@@ -161,6 +164,7 @@ export function VenteFeuille({
 
       {panierVide ? (
         <>
+          <ChoixPaiement valeur={paiement} onChange={setPaiement} />
           <button type="button" onClick={encaisser} className={classeGrosBouton}>
             <span>Encaisser</span>
             <span className="montant text-2xl">{fcfa(ligne.montant)}</span>

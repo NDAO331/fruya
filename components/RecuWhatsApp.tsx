@@ -4,7 +4,7 @@ import { useState } from "react";
 import { classeChamp } from "@/components/formulaire";
 import { fcfa } from "@/lib/format";
 import { normaliserTelephone } from "@/lib/telephone";
-import type { Unite } from "@/lib/types";
+import { LIBELLE_PAIEMENT, type Paiement, type Unite } from "@/lib/types";
 
 export type LigneRecu = { nom: string; quantite: number; unite: Unite; prix_unitaire: number; montant: number };
 
@@ -22,7 +22,7 @@ function quantite(q: number, unite: Unite): string {
   return unite === "kg" ? `${texte} kg` : `${texte} ${q > 1 ? "pièces" : "pièce"}`;
 }
 
-function texteRecu(etal: string, lignes: LigneRecu[], total: number, date: Date): string {
+function texteRecu(etal: string, lignes: LigneRecu[], total: number, date: Date, paiement?: Paiement): string {
   return [
     `*Reçu – ${etal}*`,
     formatDate.format(date),
@@ -30,6 +30,7 @@ function texteRecu(etal: string, lignes: LigneRecu[], total: number, date: Date)
     ...lignes.map((l) => `${l.nom} : ${quantite(l.quantite, l.unite)} × ${fcfa(l.prix_unitaire)} = ${fcfa(l.montant)}`),
     "",
     `*Total : ${fcfa(total)}*`,
+    ...(paiement ? [`Payé par ${LIBELLE_PAIEMENT[paiement]}`] : []),
     "Jërëjëf !",
   ].join("\n");
 }
@@ -45,12 +46,14 @@ export function RecuWhatsApp({
   etal,
   lignes,
   total,
+  paiement,
   date,
   ouvertDirectement = false,
 }: {
   etal: string;
   lignes: LigneRecu[];
   total: number;
+  paiement?: Paiement;
   date: Date;
   ouvertDirectement?: boolean;
 }) {
@@ -60,7 +63,7 @@ export function RecuWhatsApp({
 
   const contacts = typeof navigator !== "undefined" ? (navigator as Navigator & { contacts?: Contacts }).contacts : undefined;
   const telephone = normaliserTelephone(numero);
-  const lien = telephone ? `https://wa.me/${telephone}?text=${encodeURIComponent(texteRecu(etal, lignes, total, date))}` : null;
+  const lien = telephone ? `https://wa.me/${telephone}?text=${encodeURIComponent(texteRecu(etal, lignes, total, date, paiement))}` : null;
 
   async function choisirContact() {
     try {

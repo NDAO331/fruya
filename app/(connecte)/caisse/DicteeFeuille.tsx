@@ -4,9 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import { FormeFruit } from "@/components/FormeFruit";
 import { classeBoutonPrincipal } from "@/components/formulaire";
 import { fcfa } from "@/lib/format";
+import type { Paiement } from "@/lib/types";
 import { interpreterPropositions, type FruitDictee, type VenteReconnue } from "@/lib/vente-dictee";
 import { ErreurVoix, transcrire, type Ecoute } from "@/lib/voix";
 import { encaisserLignes, nouvelleLigne, quantiteAffichee, totalPanier, type LignePanier } from "./panier";
+import { ChoixPaiement } from "./ChoixPaiement";
 import { VenteEncaissee } from "./VenteEncaissee";
 
 type Etat =
@@ -51,6 +53,7 @@ export function DicteeFeuille({
   onFermer: () => void;
 }) {
   const [etat, setEtat] = useState<Etat>({ etape: "ecoute" });
+  const [paiement, setPaiement] = useState<Paiement>("especes");
   const ecoute = useRef<Ecoute | null>(null);
 
   function ecouter() {
@@ -86,7 +89,7 @@ export function DicteeFeuille({
   }, []);
 
   async function encaisser(lignes: LignePanier[]) {
-    const vente = await encaisserLignes(lignes, "vocale", stallId, userId);
+    const vente = await encaisserLignes(lignes, "vocale", paiement, stallId, userId);
     setEtat({ etape: "encaissee", ...vente, lignes });
   }
 
@@ -97,6 +100,7 @@ export function DicteeFeuille({
         date={etat.date}
         lignes={etat.lignes}
         total={totalPanier(etat.lignes)}
+        paiement={paiement}
         etalNom={etalNom}
         vendeurNom={vendeurNom}
         onSuivante={onFermer}
@@ -178,10 +182,13 @@ export function DicteeFeuille({
       {etat.supposees && <p className="text-sm font-bold text-orange-fonce">Quantité non entendue pour un fruit : 1 par défaut.</p>}
 
       {panierVide ? (
+        <>
+        <ChoixPaiement valeur={paiement} onChange={setPaiement} />
         <button type="button" onClick={() => encaisser(etat.lignes)} className={classeGrosBouton}>
           <span>Encaisser</span>
           <span className="montant text-2xl">{fcfa(total)}</span>
         </button>
+        </>
       ) : (
         <button type="button" onClick={() => onVersPanier(etat.lignes)} className={classeGrosBouton}>
           <span>Ajouter au panier</span>
