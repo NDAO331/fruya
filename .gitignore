@@ -50,3 +50,4 @@ next-env.d.ts
 .vercel
 .env*
 /video/public/musique.wav
+/video/public/sons

@@ -5,7 +5,8 @@
   "scripts": {
     "studio": "remotion studio",
     "musique": "node scripts/musique.mjs",
-    "rendu": "node scripts/musique.mjs && remotion render Pub sortie/fruya-pub-9x16.mp4",
+    "sons": "node scripts/sons.mjs",
+    "rendu": "node scripts/musique.mjs && node scripts/sons.mjs && remotion render Pub sortie/fruya-pub-9x16.mp4",
     "apercu": "remotion still Pub sortie/apercu.png --frame=420"
   },
   "dependencies": {
