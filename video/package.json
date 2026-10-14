@@ -4,7 +4,8 @@
   "description": "Vidéo publicitaire Fruya (motion design, Remotion). Séparée de l'app.",
   "scripts": {
     "studio": "remotion studio",
-    "rendu": "remotion render Pub sortie/fruya-pub-9x16.mp4",
+    "musique": "node scripts/musique.mjs",
+    "rendu": "node scripts/musique.mjs && remotion render Pub sortie/fruya-pub-9x16.mp4",
     "apercu": "remotion still Pub sortie/apercu.png --frame=420"
   },
   "dependencies": {

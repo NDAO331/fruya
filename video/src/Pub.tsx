@@ -1,4 +1,4 @@
-import { AbsoluteFill, Sequence } from "remotion";
+import { AbsoluteFill, Audio, Sequence, staticFile } from "remotion";
 import { Accroche, Appel, Ardoise, Caisse, DUREES, Logo, Pertes, Problemes, Reseau, Voix } from "./scenes";
 import { C } from "./theme";
 
@@ -21,6 +21,8 @@ export function Pub() {
   let debut = 0;
   return (
     <AbsoluteFill style={{ background: C.fond }}>
+      {/* Musique de fond composée par code : scripts/musique.mjs */}
+      <Audio src={staticFile("musique.wav")} volume={0.6} />
       {ORDRE.map(({ cle, Composant }) => {
         const from = debut;
         debut += DUREES[cle];

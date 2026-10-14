@@ -4,14 +4,32 @@
     {
       "name": "gerantpme",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
       "port": 3000
     },
     {
       "name": "fruya-prod",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "prod"],
+      "runtimeArgs": [
+        "run",
+        "prod"
+      ],
       "port": 3000
+    },
+    {
+      "name": "xam-web",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "5600",
+        "--directory",
+        "C:/Users/HP/projets/xam-web"
+      ],
+      "port": 5600
     }
   ]
 }
