@@ -7,7 +7,7 @@
     "musique": "node scripts/musique.mjs",
     "sons": "node scripts/sons.mjs",
     "rendu": "node scripts/musique.mjs && node scripts/sons.mjs && remotion render Pub sortie/fruya-pub-9x16.mp4",
-    "flyer": "remotion still Flyer sortie/fruya-flyer-a5.png --image-format=png",
+    "flyer": "remotion still Flyer sortie/fruya-flyer-a5.png --image-format=png && remotion still Flyer sortie/fruya-flyer-a5.jpg --image-format=jpeg --jpeg-quality=95 && node scripts/flyer-pdf.mjs",
     "apercu": "remotion still Pub sortie/apercu.png --frame=420"
   },
   "dependencies": {
